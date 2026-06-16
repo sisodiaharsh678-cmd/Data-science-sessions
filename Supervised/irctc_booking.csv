@@ -1,0 +1,11 @@
+booking_days_before,train_popularity,travel_day_weekend,status
+60,3,0,confirmed
+45,5,0,confirmed
+30,7,1,waitlisted
+10,9,1,waitlisted
+5,10,1,waitlisted
+50,2,0,confirmed
+40,6,0,confirmed
+8,8,1,waitlisted
+3,10,1,waitlisted
+55,4,0,confirmed
