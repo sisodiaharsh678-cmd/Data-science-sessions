@@ -1,0 +1,23 @@
+digraph {
+	rankdir=TB
+	node [fillcolor="#0B3D62" fontcolor=white fontname=Helvetica shape=box style="filled,rounded"]
+	"Data Collection"
+	"Data Cleaning"
+	EDA
+	"Feature Encoding"
+	"Train/Test Split"
+	"SMOTE (Balance Data)"
+	"Model Training"
+	"Model Evaluation"
+	"Feature Importance"
+	"HR Dashboard / Alerts"
+	"Data Collection" -> "Data Cleaning"
+	"Data Cleaning" -> EDA
+	EDA -> "Feature Encoding"
+	"Feature Encoding" -> "Train/Test Split"
+	"Train/Test Split" -> "SMOTE (Balance Data)"
+	"SMOTE (Balance Data)" -> "Model Training"
+	"Model Training" -> "Model Evaluation"
+	"Model Evaluation" -> "Feature Importance"
+	"Feature Importance" -> "HR Dashboard / Alerts"
+}
