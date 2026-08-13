@@ -1,0 +1,6 @@
+.venv/
+PetImages/
+__pycache__/
+*.pyc
+.DS_Store
+PetImages/
