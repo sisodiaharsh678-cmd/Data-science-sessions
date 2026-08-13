@@ -8,3 +8,5 @@ Transformer/results/
 *.pt
 *.safetensors
 checkpoint-*/
+Transformer/saved_summary_model/
+*.safetensors
