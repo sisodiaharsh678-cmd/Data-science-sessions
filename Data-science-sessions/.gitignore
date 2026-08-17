@@ -1,3 +1,6 @@
 deepfake-detector/.venv/
 deepfake-detector/data/
 deepfake-detector/**/__pycache__/
+deepfake-detector/.venv/
+deepfake-detector/data/
+deepfake-detector/**/__pycache__/
