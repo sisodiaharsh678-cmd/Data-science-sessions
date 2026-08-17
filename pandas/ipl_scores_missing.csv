@@ -1,0 +1,26 @@
+match_id,batting_team,bowling_team,venue,overs,wickets,runs_scored,run_rate,target,result
+1,Mumbai Indians,Chennai Super Kings,Wankhede,20,4,187,9.35,175,win
+2,Chennai Super Kings,Mumbai Indians,Chepauk,20,,152,7.60,188,loss
+3,Royal Challengers Bangalore,Kolkata Knight Riders,Chinnaswamy,20,3,,10.20,189,win
+4,Kolkata Knight Riders,Royal Challengers Bangalore,,20,7,163,8.15,205,loss
+5,Delhi Capitals,Rajasthan Royals,Kotla,20,5,178,,165,win
+6,Rajasthan Royals,Delhi Capitals,Sawai Mansingh,20,4,182,9.10,,win
+7,,Punjab Kings,Uppal,20,6,155,7.75,160,loss
+8,Punjab Kings,Sunrisers Hyderabad,PCA Stadium,20,,196,9.80,156,win
+9,Mumbai Indians,Kolkata Knight Riders,Wankhede,20,5,,8.45,172,loss
+10,Chennai Super Kings,Royal Challengers Bangalore,Chepauk,,4,192,9.60,180,win
+11,Rajasthan Royals,Mumbai Indians,Sawai Mansingh,20,7,143,,168,loss
+12,Delhi Capitals,Sunrisers Hyderabad,Kotla,20,5,175,8.75,,win
+13,Kolkata Knight Riders,Punjab Kings,Eden Gardens,20,4,188,9.40,181,
+14,Royal Challengers Bangalore,,Chinnaswamy,20,6,161,8.05,176,loss
+15,Punjab Kings,Chennai Super Kings,PCA Stadium,20,3,201,,195,win
+16,Sunrisers Hyderabad,Rajasthan Royals,Uppal,20,,166,8.30,163,win
+17,Mumbai Indians,Royal Challengers Bangalore,Wankhede,20,4,,9.50,185,win
+18,,Delhi Capitals,Chepauk,20,7,148,7.40,152,loss
+19,Kolkata Knight Riders,Sunrisers Hyderabad,Eden Gardens,20,3,210,10.50,,win
+20,Rajasthan Royals,Punjab Kings,Sawai Mansingh,20,6,157,7.85,162,
+21,Delhi Capitals,Mumbai Indians,Kotla,20,5,173,,178,loss
+22,Royal Challengers Bangalore,Chennai Super Kings,Chinnaswamy,,4,195,9.75,190,win
+23,Punjab Kings,Kolkata Knight Riders,PCA Stadium,20,7,,7.50,155,loss
+24,Sunrisers Hyderabad,Mumbai Indians,Uppal,20,5,168,8.40,,loss
+25,Rajasthan Royals,Royal Challengers Bangalore,Sawai Mansingh,20,3,199,9.95,194,win

@@ -1,0 +1,12 @@
+.venv/
+PetImages/
+__pycache__/
+*.pyc
+.DS_Store
+PetImages/
+Transformer/results/
+*.pt
+*.safetensors
+checkpoint-*/
+Transformer/saved_summary_model/
+*.safetensors
