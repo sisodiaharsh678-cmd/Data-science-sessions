@@ -1,0 +1,10 @@
+s = input("enter string :")
+
+print(s.capitalize())
+print(s.casefold())
+print(s.isalnum())
+print(s.center(50,"-"))
+print(s.lower())
+print(s.find("log"))
+print(s.istitle())
+print(s.title())
