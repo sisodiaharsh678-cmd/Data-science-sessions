@@ -23,7 +23,6 @@ def home():
 # Prediction Route
 @app.post("/predict")
 def predict_salary(data: Employee):
-
     exp = np.array([[data.experience]])
 
     prediction = model.predict(exp)

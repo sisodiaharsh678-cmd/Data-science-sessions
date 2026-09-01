@@ -1,0 +1,586 @@
+{
+  "fixed_size": [
+    {
+      "text": "import numpy as np\nimport pandas as pd\nimport streamlit as st\nimport plotly.graph_objects as go\n \n# ============================================================\n# RUN YOUR PROJECT FILE \u2014 loads all trained models & scaler\n# ============================================================\nexec(open(\"final_year.py\").read())\n \n# ============================================================\n# PAGE CONFIG\n# ============================================================\nst.set_page_config(",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "st.set_page_config(\n    page_title=\"Alzheimer's Early Detection\",\n    page_icon=\"\ud83e\udde0\",\n    layout=\"centered\"\n)\n \n# ============================================================\n# CUSTOM CSS\n# ============================================================\nst.markdown(\"\"\"\n<style>\n    .main { max-width: 800px; }\n    .title-box {\n        background: linear-gradient(135deg, #7C3AED, #4F46E5);\n        padding: 30px;\n        border-radius: 16px;\n        text-align: center;\n        color: white;",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "text-align: center;\n        color: white;\n        margin-bottom: 30px;\n    }\n    .title-box h1 { font-size: 2rem; margin: 0; }\n    .title-box p  { font-size: 1rem; margin: 8px 0 0; opacity: 0.85; }\n    .section-header {\n        background: #F3F0FF;\n        border-left: 5px solid #7C3AED;\n        padding: 10px 16px;\n        border-radius: 6px;\n        font-weight: 600;\n        font-size: 16px;\n        color: #4C1D95;\n        margin: 24px 0 14px;\n    }\n    .result-positive {",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "}\n    .result-positive {\n        background: #FEE2E2;\n        border: 2px solid #EF4444;\n        border-radius: 12px;\n        padding: 24px;\n        text-align: center;\n    }\n    .result-negative {\n        background: #D1FAE5;\n        border: 2px solid #10B981;\n        border-radius: 12px;\n        padding: 24px;\n        text-align: center;\n    }\n    .footer {\n        text-align: center;\n        color: #9CA3AF;\n        font-size: 12px;\n        margin-top: 40px;\n    }\n</style>",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "margin-top: 40px;\n    }\n</style>\n\"\"\", unsafe_allow_html=True)\n \n# ============================================================\n# HEADER\n# ============================================================\nst.markdown(\"\"\"\n<div class=\"title-box\">\n    <h1>\ud83e\udde0 Alzheimer's Early Detection</h1>\n    <p>Enter patient details below to check the risk of Alzheimer's disease</p>",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "<p style=\"font-size:12px; opacity:0.7;\">Final Year Project \u00b7 BSc (Hons) Computing Science \u00b7 PSB Academy / Coventry University</p>\n</div>\n\"\"\", unsafe_allow_html=True)\n \nst.info(f\"\ud83e\udd16 Powered by **{best_model}** \u2014 Best performing model (highest ROC-AUC)\")\n \n# ============================================================\n# PATIENT DETAILS FORM\n# ============================================================",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "st.markdown('<div class=\"section-header\">\ud83d\udc64 Personal Information</div>', unsafe_allow_html=True)\ncol1, col2, col3 = st.columns(3)\nwith col1:\n    age       = st.number_input(\"Age\", min_value=60, max_value=90, value=72)\nwith col2:\n    gender    = st.selectbox(\"Gender\", [0, 1], format_func=lambda x: \"Male\" if x == 0 else \"Female\")\nwith col3:\n    ethnicity = st.selectbox(\"Ethnicity\", [0, 1, 2, 3],\n                             format_func=lambda x: [\"Caucasian\",\"African American\",\"Asian\",\"Other\"][x])",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "col1, col2 = st.columns(2)\nwith col1:\n    education = st.selectbox(\"Education Level\", [0, 1, 2, 3],\n                             format_func=lambda x: [\"None\",\"High School\",\"Bachelor's\",\"Higher\"][x])\nwith col2:\n    bmi = st.slider(\"BMI\", 15.0, 40.0, 25.0)\n \n# ============================================================\nst.markdown('<div class=\"section-header\">\ud83c\udfe5 Lifestyle Factors</div>', unsafe_allow_html=True)\ncol1, col2, col3 = st.columns(3)\nwith col1:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "col1, col2, col3 = st.columns(3)\nwith col1:\n    smoking  = st.selectbox(\"Smoking\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:\n    alcohol  = st.slider(\"Alcohol Consumption\", 0.0, 20.0, 5.0)\nwith col3:\n    physical = st.slider(\"Physical Activity (hrs/week)\", 0.0, 10.0, 3.0)\n \ncol1, col2 = st.columns(2)\nwith col1:\n    diet     = st.slider(\"Diet Quality Score (0\u201310)\", 0.0, 10.0, 5.0)\nwith col2:\n    sleep    = st.slider(\"Sleep Quality Score (4\u201310)\", 4.0, 10.0, 7.0)",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# ============================================================\nst.markdown('<div class=\"section-header\">\u2764\ufe0f Medical History</div>', unsafe_allow_html=True)\ncol1, col2, col3 = st.columns(3)\nwith col1:\n    family_history  = st.selectbox(\"Family History of Alzheimer's\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:\n    cardiovascular  = st.selectbox(\"Cardiovascular Disease\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col3:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "with col3:\n    diabetes        = st.selectbox(\"Diabetes\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \ncol1, col2, col3 = st.columns(3)\nwith col1:\n    depression      = st.selectbox(\"Depression\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:\n    head_injury     = st.selectbox(\"Head Injury\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col3:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "with col3:\n    hypertension    = st.selectbox(\"Hypertension\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \n# ============================================================\nst.markdown('<div class=\"section-header\">\ud83e\ude7a Clinical Measurements</div>', unsafe_allow_html=True)\ncol1, col2 = st.columns(2)\nwith col1:\n    systolic_bp  = st.slider(\"Systolic BP (mmHg)\", 90, 180, 120)\n    diastolic_bp = st.slider(\"Diastolic BP (mmHg)\", 60, 120, 80)",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "chol_total   = st.slider(\"Total Cholesterol (mg/dL)\", 150.0, 300.0, 200.0)\nwith col2:\n    chol_ldl     = st.slider(\"LDL Cholesterol\", 50.0, 200.0, 100.0)\n    chol_hdl     = st.slider(\"HDL Cholesterol\", 20.0, 100.0, 50.0)\n    chol_trig    = st.slider(\"Triglycerides\", 50.0, 400.0, 150.0)\n \n# ============================================================\nst.markdown('<div class=\"section-header\">\ud83e\uddea Cognitive & Functional Assessment</div>', unsafe_allow_html=True)\ncol1, col2 = st.columns(2)",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "col1, col2 = st.columns(2)\nwith col1:\n    mmse              = st.slider(\"MMSE Score (0\u201330)\", 0.0, 30.0, 24.0,\n                                  help=\"Mini-Mental State Examination. Lower = more cognitive impairment.\")\n    functional_assess = st.slider(\"Functional Assessment (0\u201310)\", 0.0, 10.0, 5.0)\n    memory_complaints = st.selectbox(\"Memory Complaints\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "with col2:\n    behavioral        = st.selectbox(\"Behavioral Problems\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n    adl               = st.slider(\"ADL Score (0\u201310)\", 0.0, 10.0, 5.0,\n                                  help=\"Activities of Daily Living. Lower = more difficulty.\")\n    confusion         = st.selectbox(\"Confusion\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \ncol1, col2 = st.columns(2)\nwith col1:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "col1, col2 = st.columns(2)\nwith col1:\n    disorientation    = st.selectbox(\"Disorientation\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:\n    personality       = st.selectbox(\"Personality Changes\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \ncol1, col2 = st.columns(2)\nwith col1:\n    difficulty_tasks  = st.selectbox(\"Difficulty with Tasks\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "with col2:\n    forgetfulness     = st.selectbox(\"Forgetfulness\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \n# ============================================================\n# PREDICT BUTTON\n# ============================================================\nst.markdown(\"---\")\npredict_btn = st.button(\"\ud83d\udd2e Check Alzheimer's Risk\", use_container_width=True, type=\"primary\")\n \nif predict_btn:\n    # Build input with all features filled to median",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "input_dict = {col: [float(df[col].median())] for col in X.columns}\n \n    # Override with patient inputs\n    user_vals = {\n        'Age': age, 'Gender': gender, 'Ethnicity': ethnicity,\n        'EducationLevel': education, 'BMI': bmi, 'Smoking': smoking,\n        'AlcoholConsumption': alcohol, 'PhysicalActivity': physical,\n        'DietQuality': diet, 'SleepQuality': sleep,\n        'FamilyHistoryAlzheimers': family_history,\n        'CardiovascularDisease': cardiovascular, 'Diabetes': diabetes,",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "'Depression': depression, 'HeadInjury': head_injury,\n        'Hypertension': hypertension, 'SystolicBP': systolic_bp,\n        'DiastolicBP': diastolic_bp, 'CholesterolTotal': chol_total,\n        'CholesterolLDL': chol_ldl, 'CholesterolHDL': chol_hdl,\n        'CholesterolTriglycerides': chol_trig, 'MMSE': mmse,\n        'FunctionalAssessment': functional_assess,\n        'MemoryComplaints': memory_complaints,\n        'BehavioralProblems': behavioral, 'ADL': adl,",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "'Confusion': confusion, 'Disorientation': disorientation,\n        'PersonalityChanges': personality,\n        'DifficultyCompletingTasks': difficulty_tasks,\n        'Forgetfulness': forgetfulness\n    }\n \n    for col, val in user_vals.items():\n        if col in input_dict:\n            input_dict[col] = [float(val)]\n \n    input_df     = pd.DataFrame(input_dict)\n    input_scaled = scaler.transform(input_df)\n \n    prediction   = best_model.predict(input_scaled)[0]",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "probability  = best_model.predict_proba(input_scaled)[0][1]\n \n    st.markdown(\"---\")\n    st.subheader(\"\ud83d\udccb Result\")\n \n    # Result box\n    if prediction == 1:\n        st.markdown(f\"\"\"\n        <div class=\"result-positive\">\n            <h2>\ud83d\udd34 High Risk \u2014 Alzheimer's Detected</h2>\n            <p style=\"font-size:18px;\">This patient shows <b>{probability*100:.1f}%</b> probability of Alzheimer's disease.</p>",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "<p>\u26a0\ufe0f Please consult a neurologist or specialist immediately for further evaluation.</p>\n        </div>\n        \"\"\", unsafe_allow_html=True)\n    else:\n        st.markdown(f\"\"\"\n        <div class=\"result-negative\">\n            <h2>\ud83d\udfe2 Low Risk \u2014 No Alzheimer's Detected</h2>\n            <p style=\"font-size:18px;\">This patient shows <b>{probability*100:.1f}%</b> probability of Alzheimer's disease.</p>\n            <p>\u2705 No immediate concern. Continue regular health checkups.</p>",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "</div>\n        \"\"\", unsafe_allow_html=True)\n \n    # Gauge chart\n    st.markdown(\"<br>\", unsafe_allow_html=True)\n    fig = go.Figure(go.Indicator(\n        mode  = \"gauge+number+delta\",\n        value = round(probability * 100, 1),\n        title = {'text': \"Alzheimer's Risk Probability (%)\"},\n        delta = {'reference': 50},\n        gauge = {\n            'axis': {'range': [0, 100]},\n            'bar':  {'color': '#7C3AED'},\n            'steps': [",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "'steps': [\n                {'range': [0,  30],  'color': '#D1FAE5'},\n                {'range': [30, 60],  'color': '#FEF3C7'},\n                {'range': [60, 100], 'color': '#FEE2E2'}\n            ],\n            'threshold': {\n                'line':      {'color': 'red', 'width': 4},\n                'thickness': 0.75,\n                'value':     50\n            }\n        }\n    ))\n    fig.update_layout(height=300)\n    st.plotly_chart(fig, use_container_width=True)\n \n    # Key factors",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# Key factors\n    st.subheader(\"\ud83d\udd0d Key Risk Factors Entered\")\n    risk_summary = pd.DataFrame({\n        'Factor':       ['MMSE Score', 'Functional Assessment', 'ADL Score',\n                         'Memory Complaints', 'Family History', 'Depression', 'Age'],\n        'Value':        [mmse, functional_assess, adl,\n                         'Yes' if memory_complaints else 'No',\n                         'Yes' if family_history else 'No',\n                         'Yes' if depression else 'No',",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "age],\n        'Risk Level':   [\n            '\ud83d\udd34 High' if mmse < 20 else ('\ud83d\udfe1 Medium' if mmse < 25 else '\ud83d\udfe2 Low'),\n            '\ud83d\udd34 High' if functional_assess < 4 else ('\ud83d\udfe1 Medium' if functional_assess < 7 else '\ud83d\udfe2 Low'),\n            '\ud83d\udd34 High' if adl < 4 else ('\ud83d\udfe1 Medium' if adl < 7 else '\ud83d\udfe2 Low'),\n            '\ud83d\udd34 High' if memory_complaints else '\ud83d\udfe2 Low',\n            '\ud83d\udd34 High' if family_history else '\ud83d\udfe2 Low',\n            '\ud83d\udfe1 Medium' if depression else '\ud83d\udfe2 Low',",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "'\ud83d\udd34 High' if age >= 80 else ('\ud83d\udfe1 Medium' if age >= 70 else '\ud83d\udfe2 Low')\n        ]\n    })\n    st.dataframe(risk_summary, use_container_width=True, hide_index=True)\n \n    st.warning(\"\u26a0\ufe0f **Disclaimer:** This tool is for educational purposes only and is not a substitute for professional medical diagnosis.\")\n \n# ============================================================\n# FOOTER\n# ============================================================\nst.markdown(\"\"\"\n<div class=\"footer\">",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "st.markdown(\"\"\"\n<div class=\"footer\">\n    \ud83e\udde0 Alzheimer's Early Detection System \u00b7 Final Year Project<br>\n    BSc (Hons) Computing Science \u00b7 PSB Academy / Coventry University<br>\n    Built with Python \u00b7 Scikit-learn \u00b7 XGBoost \u00b7 Streamlit\n</div>\n\"\"\", unsafe_allow_html=True)",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "#!/usr/bin/env python\n# coding: utf-8\n\n# In[3]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[3]:\n\n\nimport numpy as np\nimport pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import LabelEncoder, StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.tree import DecisionTreeClassifier\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import (accuracy_score, confusion_matrix,\n                             classification_report, roc_auc_score)\nfrom xgboost import XGBClassifier\n\n\n# In[4]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[4]:\n\n\n# ============================================================\n# STEP 1 \u2014 Load Dataset\n# ============================================================\nprint(\"=\" * 60)\nprint(\"STEP 1: LOAD DATASET\")\nprint(\"=\" * 60)\n\ndf = pd.read_csv('alzheimers_disease_data.csv')  # change filename if needed\n\nprint(f\"Shape: {df.shape}\")\nprint(f\"\\nFirst 5 rows:\")\nprint(df.head())\nprint(f\"\\nColumn names: {df.columns.tolist()}\")\nprint(f\"\\nData types:\\n{df.dtypes}\")\n\n\n# In[5]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[5]:\n\n\n# ============================================================\n# STEP 2 \u2014 EDA (Exploratory Data Analysis)\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 2: EDA\")\nprint(\"=\" * 60)\n\n# Basic statistics\nprint(\"\\n--- describe() ---\")\nprint(df.describe().round(2))\n\n# Missing values\nprint(\"\\n--- Missing Values ---\")\nprint(df.isnull().sum())",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# Target column distribution\nprint(\"\\n--- Target: Diagnosis (0 = No Alzheimer's, 1 = Alzheimer's) ---\")\nprint(df['Diagnosis'].value_counts())\nprint(f\"\\nClass balance (%):\\n{df['Diagnosis'].value_counts(normalize=True).round(3) * 100}\")\n\n\n# In[6]:\n\n\n# ============================================================\n# STEP 3 \u2014 Preprocessing\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 3: PREPROCESSING\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# Drop PatientID and DoctorInCharge \u2014 these are just identifiers, not features\n# They have no predictive value for Alzheimer's detection\ndrop_cols = [col for col in ['PatientID', 'DoctorInCharge'] if col in df.columns]\ndf.drop(columns=drop_cols, inplace=True)\nprint(f\"Dropped columns: {drop_cols}\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# --- Label Encode any remaining object/categorical columns ---\n# LabelEncoder converts text categories like \"Male\"/\"Female\" \u2192 0/1\nle = LabelEncoder()\ncat_cols = df.select_dtypes(include=['object']).columns.tolist()\n\nif cat_cols:\n    for col in cat_cols:\n        df[col] = le.fit_transform(df[col].astype(str))\n    print(f\"Label encoded columns: {cat_cols}\")\nelse:\n    print(\"No categorical columns found \u2014 all columns are already numeric.\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# --- Fill missing values with column median ---\n# Median is better than mean because it is not affected by outliers\nmissing_cols = df.columns[df.isnull().any()].tolist()\nif missing_cols:\n    for col in missing_cols:\n        df[col].fillna(df[col].median(), inplace=True)\n    print(f\"Filled missing values in: {missing_cols}\")\nelse:\n    print(\"No missing values found.\")\n\nprint(f\"\\nShape after preprocessing: {df.shape}\")\n\n\n\n# In[7]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[7]:\n\n\n# ============================================================\n# STEP 4 \u2014 Split Features and Target\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 4: SPLIT FEATURES (X) AND TARGET (y)\")\nprint(\"=\" * 60)\n\n# X = all columns except Diagnosis\n# y = Diagnosis column (0 or 1)\nX = df.drop(columns=['Diagnosis'])\ny = df['Diagnosis']\n\nprint(f\"X shape: {X.shape}\")\nprint(f\"y shape: {y.shape}\")\nprint(f\"Features used: {X.columns.tolist()}\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[8]:\n\n\n# ============================================================\n# STEP 5 \u2014 Train Test Split\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 5: TRAIN TEST SPLIT (80% train, 20% test)\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# stratify=y ensures both train and test have same % of 0s and 1s\n# Important for medical datasets where class imbalance can exist\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42, stratify=y\n)\n\nprint(f\"X_train: {X_train.shape}  |  X_test: {X_test.shape}\")\nprint(f\"y_train: {y_train.shape}  |  y_test: {y_test.shape}\")\n\n\n# In[9]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[9]:\n\n\n# ============================================================\n# STEP 6 \u2014 Feature Scaling (StandardScaler)\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 6: FEATURE SCALING \u2014 StandardScaler\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# StandardScaler makes every feature have mean=0 and std=1\n# This is REQUIRED for Logistic Regression\n# For tree-based models (Decision Tree, RF, XGBoost) it is not required\n# but we apply it anyway for consistency\nscaler = StandardScaler()\n\n# fit_transform on train \u2014 learns mean & std from training data only\n# transform on test \u2014 applies the same learned mean & std (no leakage)\nX_train_scaled = scaler.fit_transform(X_train)\nX_test_scaled  = scaler.transform(X_test)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "print(\"Scaling done. Mean of each feature in X_train_scaled \u2248 0\")\nprint(f\"Sample means (first 5 features): {X_train_scaled.mean(axis=0)[:5].round(4)}\")\n\n\n\n# In[10]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# ============================================================\n# Helper function to print all metrics\n# ============================================================\ndef evaluate_model(name, y_test, y_pred, y_prob=None):\n    print(f\"\\n--- {name} ---\")\n    print(f\"Accuracy  : {accuracy_score(y_test, y_pred):.4f}\")\n    if y_prob is not None:\n        print(f\"ROC-AUC   : {roc_auc_score(y_test, y_prob):.4f}\")\n    print(f\"\\nConfusion Matrix:\\n{confusion_matrix(y_test, y_pred)}\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "print(f\"\\nClassification Report:\\n{classification_report(y_test, y_pred)}\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[11]:\n\n\n# ============================================================\n# STEP 7 \u2014 Model 1: Logistic Regression\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 7: MODEL 1 \u2014 LOGISTIC REGRESSION\")\nprint(\"=\" * 60)\n\n# Logistic Regression is the baseline model\n# max_iter=1000 to ensure the solver converges\nlr = LogisticRegression(max_iter=1000, random_state=42)\nlr.fit(X_train_scaled, y_train)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "lr_pred = lr.predict(X_test_scaled)\nlr_prob = lr.predict_proba(X_test_scaled)[:, 1]  # probability of class 1\n\nevaluate_model(\"Logistic Regression\", y_test, lr_pred, lr_prob)\n\n\n# In[12]:\n\n\n# ============================================================\n# STEP 8 \u2014 Model 2: Decision Tree\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 8: MODEL 2 \u2014 DECISION TREE\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# max_depth=5 prevents overfitting \u2014 tree won't grow too deep\ndt = DecisionTreeClassifier(max_depth=5, random_state=42)\ndt.fit(X_train_scaled, y_train)\n\ndt_pred = dt.predict(X_test_scaled)\ndt_prob = dt.predict_proba(X_test_scaled)[:, 1]\n\nevaluate_model(\"Decision Tree\", y_test, dt_pred, dt_prob)\n\n\n\n# In[13]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[13]:\n\n\n# ============================================================\n# STEP 9 \u2014 Model 3: Random Forest\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 9: MODEL 3 \u2014 RANDOM FOREST\")\nprint(\"=\" * 60)\n\n# n_estimators=100 \u2192 builds 100 decision trees and averages them\n# This reduces overfitting compared to a single Decision Tree\nrf = RandomForestClassifier(n_estimators=100, random_state=42)\nrf.fit(X_train_scaled, y_train)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "rf_pred = rf.predict(X_test_scaled)\nrf_prob = rf.predict_proba(X_test_scaled)[:, 1]\n\nevaluate_model(\"Random Forest\", y_test, rf_pred, rf_prob)\n\n# Feature importance \u2014 which features matter most for prediction\nprint(\"\\nTop 10 Important Features (Random Forest):\")\nfeat_imp = pd.Series(rf.feature_importances_, index=X.columns)\nprint(feat_imp.sort_values(ascending=False).head(10).round(4))\n\n\n# In[14]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[14]:\n\n\n# ============================================================\n# STEP 10 \u2014 Model 4: XGBoost (Primary / Best Model)\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 10: MODEL 4 \u2014 XGBOOST (Primary Model)\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# XGBoost is gradient boosting \u2014 builds trees sequentially\n# Each new tree corrects errors made by the previous ones\n# eval_metric='logloss' is standard for binary classification\nxgb = XGBClassifier(\n    n_estimators=100,\n    learning_rate=0.1,       # step size for each boosting round\n    max_depth=5,             # depth of each tree\n    eval_metric='logloss',\n    random_state=42,\n    use_label_encoder=False\n)\nxgb.fit(X_train_scaled, y_train)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "xgb_pred = xgb.predict(X_test_scaled)\nxgb_prob = xgb.predict_proba(X_test_scaled)[:, 1]\n\nevaluate_model(\"XGBoost\", y_test, xgb_pred, xgb_prob)\n\n# Feature importance for XGBoost\nprint(\"\\nTop 10 Important Features (XGBoost):\")\nxgb_imp = pd.Series(xgb.feature_importances_, index=X.columns)\nprint(xgb_imp.sort_values(ascending=False).head(10).round(4))\n\n\n# In[15]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[15]:\n\n\n# ============================================================\n# STEP 11 \u2014 Model Comparison Summary\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 11: MODEL COMPARISON SUMMARY\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "results = {\n    'Model': ['Logistic Regression', 'Decision Tree', 'Random Forest', 'XGBoost'],\n    'Accuracy': [\n        accuracy_score(y_test, lr_pred),\n        accuracy_score(y_test, dt_pred),\n        accuracy_score(y_test, rf_pred),\n        accuracy_score(y_test, xgb_pred)\n    ],\n    'ROC-AUC': [\n        roc_auc_score(y_test, lr_prob),\n        roc_auc_score(y_test, dt_prob),\n        roc_auc_score(y_test, rf_prob),\n        roc_auc_score(y_test, xgb_prob)\n    ]\n}",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "summary_df = pd.DataFrame(results)\nsummary_df['Accuracy'] = summary_df['Accuracy'].round(4)\nsummary_df['ROC-AUC']  = summary_df['ROC-AUC'].round(4)\nprint(summary_df.to_string(index=False))\n\nbest_model = summary_df.loc[summary_df['ROC-AUC'].idxmax(), 'Model']\nprint(f\"\\nBest model by ROC-AUC: {best_model}\")\n\nprint(\"\\n\" + \"=\" * 60)\nprint(\"PROJECT COMPLETE\")\nprint(\"=\" * 60)\n\n\n# In[16]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[16]:\n\n\n# ============================================================\n# STEP 12 \u2014 Use Best Model for Final Predictions\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 12: BEST MODEL \u2014 FINAL PREDICTIONS\")\nprint(\"=\" * 60)\n\n# Map model name \u2192 actual trained model object\nmodel_map = {\n    'Logistic Regression': lr,\n    'Decision Tree':       dt,\n    'Random Forest':       rf,\n    'XGBoost':             xgb\n}",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# Pick the actual model object using the best model name\nbest_model = model_map[best_model]\nprint(f\"Selected: {best_model}\")\n\n# Final predictions using the best model\nfinal_pred = best_model.predict(X_test_scaled)\nfinal_prob = best_model.predict_proba(X_test_scaled)[:, 1]\n\nprint(f\"\\nFinal Accuracy : {accuracy_score(y_test, final_pred):.4f}\")\nprint(f\"Final ROC-AUC  : {roc_auc_score(y_test, final_prob):.4f}\")\n\nprint(\"\\nFinal Confusion Matrix:\")\nprint(confusion_matrix(y_test, final_pred))",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "print(\"\\nFinal Classification Report:\")\nprint(classification_report(y_test, final_pred,\n      target_names=[\"No Alzheimer's (0)\", \"Alzheimer's (1)\"]))\n\n# Show sample predictions vs actual\nprint(\"Sample \u2014 Actual vs Predicted (first 10):\")\nsample = pd.DataFrame({\n    'Actual'   : y_test.values[:10],\n    'Predicted': final_pred[:10],\n    \"Probability (Alzheimer's)\": final_prob[:10].round(3)\n})\nprint(sample.to_string(index=False))\n\nprint(\"\\n\" + \"=\" * 60)\nprint(\"PROJECT COMPLETE\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    }
+  ],
+  "markdown_header": [
+    {
+      "text": "import numpy as np\nimport pandas as pd\nimport streamlit as st\nimport plotly.graph_objects as go\n \n# ============================================================\n# RUN YOUR PROJECT FILE \u2014 loads all trained models & scaler\n# ============================================================\nexec(open(\"final_year.py\").read())\n \n# ============================================================\n# PAGE CONFIG\n# ============================================================\nst.set_page_config(",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "st.set_page_config(\n    page_title=\"Alzheimer's Early Detection\",\n    page_icon=\"\ud83e\udde0\",\n    layout=\"centered\"\n)\n \n# ============================================================\n# CUSTOM CSS\n# ============================================================\nst.markdown(\"\"\"\n<style>\n    .main { max-width: 800px; }\n    .title-box {\n        background: linear-gradient(135deg, #7C3AED, #4F46E5);\n        padding: 30px;\n        border-radius: 16px;\n        text-align: center;\n        color: white;",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "text-align: center;\n        color: white;\n        margin-bottom: 30px;\n    }\n    .title-box h1 { font-size: 2rem; margin: 0; }\n    .title-box p  { font-size: 1rem; margin: 8px 0 0; opacity: 0.85; }\n    .section-header {\n        background: #F3F0FF;\n        border-left: 5px solid #7C3AED;\n        padding: 10px 16px;\n        border-radius: 6px;\n        font-weight: 600;\n        font-size: 16px;\n        color: #4C1D95;\n        margin: 24px 0 14px;\n    }\n    .result-positive {",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "}\n    .result-positive {\n        background: #FEE2E2;\n        border: 2px solid #EF4444;\n        border-radius: 12px;\n        padding: 24px;\n        text-align: center;\n    }\n    .result-negative {\n        background: #D1FAE5;\n        border: 2px solid #10B981;\n        border-radius: 12px;\n        padding: 24px;\n        text-align: center;\n    }\n    .footer {\n        text-align: center;\n        color: #9CA3AF;\n        font-size: 12px;\n        margin-top: 40px;\n    }\n</style>",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "margin-top: 40px;\n    }\n</style>\n\"\"\", unsafe_allow_html=True)\n \n# ============================================================\n# HEADER\n# ============================================================\nst.markdown(\"\"\"\n<div class=\"title-box\">\n    <h1>\ud83e\udde0 Alzheimer's Early Detection</h1>\n    <p>Enter patient details below to check the risk of Alzheimer's disease</p>",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "<p style=\"font-size:12px; opacity:0.7;\">Final Year Project \u00b7 BSc (Hons) Computing Science \u00b7 PSB Academy / Coventry University</p>\n</div>\n\"\"\", unsafe_allow_html=True)\n \nst.info(f\"\ud83e\udd16 Powered by **{best_model}** \u2014 Best performing model (highest ROC-AUC)\")\n \n# ============================================================\n# PATIENT DETAILS FORM\n# ============================================================",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "st.markdown('<div class=\"section-header\">\ud83d\udc64 Personal Information</div>', unsafe_allow_html=True)\ncol1, col2, col3 = st.columns(3)\nwith col1:\n    age       = st.number_input(\"Age\", min_value=60, max_value=90, value=72)\nwith col2:\n    gender    = st.selectbox(\"Gender\", [0, 1], format_func=lambda x: \"Male\" if x == 0 else \"Female\")\nwith col3:\n    ethnicity = st.selectbox(\"Ethnicity\", [0, 1, 2, 3],\n                             format_func=lambda x: [\"Caucasian\",\"African American\",\"Asian\",\"Other\"][x])",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "col1, col2 = st.columns(2)\nwith col1:\n    education = st.selectbox(\"Education Level\", [0, 1, 2, 3],\n                             format_func=lambda x: [\"None\",\"High School\",\"Bachelor's\",\"Higher\"][x])\nwith col2:\n    bmi = st.slider(\"BMI\", 15.0, 40.0, 25.0)\n \n# ============================================================\nst.markdown('<div class=\"section-header\">\ud83c\udfe5 Lifestyle Factors</div>', unsafe_allow_html=True)\ncol1, col2, col3 = st.columns(3)\nwith col1:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "col1, col2, col3 = st.columns(3)\nwith col1:\n    smoking  = st.selectbox(\"Smoking\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:\n    alcohol  = st.slider(\"Alcohol Consumption\", 0.0, 20.0, 5.0)\nwith col3:\n    physical = st.slider(\"Physical Activity (hrs/week)\", 0.0, 10.0, 3.0)\n \ncol1, col2 = st.columns(2)\nwith col1:\n    diet     = st.slider(\"Diet Quality Score (0\u201310)\", 0.0, 10.0, 5.0)\nwith col2:\n    sleep    = st.slider(\"Sleep Quality Score (4\u201310)\", 4.0, 10.0, 7.0)",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# ============================================================\nst.markdown('<div class=\"section-header\">\u2764\ufe0f Medical History</div>', unsafe_allow_html=True)\ncol1, col2, col3 = st.columns(3)\nwith col1:\n    family_history  = st.selectbox(\"Family History of Alzheimer's\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:\n    cardiovascular  = st.selectbox(\"Cardiovascular Disease\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col3:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "with col3:\n    diabetes        = st.selectbox(\"Diabetes\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \ncol1, col2, col3 = st.columns(3)\nwith col1:\n    depression      = st.selectbox(\"Depression\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:\n    head_injury     = st.selectbox(\"Head Injury\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col3:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "with col3:\n    hypertension    = st.selectbox(\"Hypertension\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \n# ============================================================\nst.markdown('<div class=\"section-header\">\ud83e\ude7a Clinical Measurements</div>', unsafe_allow_html=True)\ncol1, col2 = st.columns(2)\nwith col1:\n    systolic_bp  = st.slider(\"Systolic BP (mmHg)\", 90, 180, 120)\n    diastolic_bp = st.slider(\"Diastolic BP (mmHg)\", 60, 120, 80)",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "chol_total   = st.slider(\"Total Cholesterol (mg/dL)\", 150.0, 300.0, 200.0)\nwith col2:\n    chol_ldl     = st.slider(\"LDL Cholesterol\", 50.0, 200.0, 100.0)\n    chol_hdl     = st.slider(\"HDL Cholesterol\", 20.0, 100.0, 50.0)\n    chol_trig    = st.slider(\"Triglycerides\", 50.0, 400.0, 150.0)\n \n# ============================================================\nst.markdown('<div class=\"section-header\">\ud83e\uddea Cognitive & Functional Assessment</div>', unsafe_allow_html=True)\ncol1, col2 = st.columns(2)",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "col1, col2 = st.columns(2)\nwith col1:\n    mmse              = st.slider(\"MMSE Score (0\u201330)\", 0.0, 30.0, 24.0,\n                                  help=\"Mini-Mental State Examination. Lower = more cognitive impairment.\")\n    functional_assess = st.slider(\"Functional Assessment (0\u201310)\", 0.0, 10.0, 5.0)\n    memory_complaints = st.selectbox(\"Memory Complaints\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "with col2:\n    behavioral        = st.selectbox(\"Behavioral Problems\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n    adl               = st.slider(\"ADL Score (0\u201310)\", 0.0, 10.0, 5.0,\n                                  help=\"Activities of Daily Living. Lower = more difficulty.\")\n    confusion         = st.selectbox(\"Confusion\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \ncol1, col2 = st.columns(2)\nwith col1:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "col1, col2 = st.columns(2)\nwith col1:\n    disorientation    = st.selectbox(\"Disorientation\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:\n    personality       = st.selectbox(\"Personality Changes\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \ncol1, col2 = st.columns(2)\nwith col1:\n    difficulty_tasks  = st.selectbox(\"Difficulty with Tasks\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\nwith col2:",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "with col2:\n    forgetfulness     = st.selectbox(\"Forgetfulness\", [0, 1], format_func=lambda x: \"No\" if x == 0 else \"Yes\")\n \n# ============================================================\n# PREDICT BUTTON\n# ============================================================\nst.markdown(\"---\")\npredict_btn = st.button(\"\ud83d\udd2e Check Alzheimer's Risk\", use_container_width=True, type=\"primary\")\n \nif predict_btn:\n    # Build input with all features filled to median",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "input_dict = {col: [float(df[col].median())] for col in X.columns}\n \n    # Override with patient inputs\n    user_vals = {\n        'Age': age, 'Gender': gender, 'Ethnicity': ethnicity,\n        'EducationLevel': education, 'BMI': bmi, 'Smoking': smoking,\n        'AlcoholConsumption': alcohol, 'PhysicalActivity': physical,\n        'DietQuality': diet, 'SleepQuality': sleep,\n        'FamilyHistoryAlzheimers': family_history,\n        'CardiovascularDisease': cardiovascular, 'Diabetes': diabetes,",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "'Depression': depression, 'HeadInjury': head_injury,\n        'Hypertension': hypertension, 'SystolicBP': systolic_bp,\n        'DiastolicBP': diastolic_bp, 'CholesterolTotal': chol_total,\n        'CholesterolLDL': chol_ldl, 'CholesterolHDL': chol_hdl,\n        'CholesterolTriglycerides': chol_trig, 'MMSE': mmse,\n        'FunctionalAssessment': functional_assess,\n        'MemoryComplaints': memory_complaints,\n        'BehavioralProblems': behavioral, 'ADL': adl,",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "'Confusion': confusion, 'Disorientation': disorientation,\n        'PersonalityChanges': personality,\n        'DifficultyCompletingTasks': difficulty_tasks,\n        'Forgetfulness': forgetfulness\n    }\n \n    for col, val in user_vals.items():\n        if col in input_dict:\n            input_dict[col] = [float(val)]\n \n    input_df     = pd.DataFrame(input_dict)\n    input_scaled = scaler.transform(input_df)\n \n    prediction   = best_model.predict(input_scaled)[0]",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "probability  = best_model.predict_proba(input_scaled)[0][1]\n \n    st.markdown(\"---\")\n    st.subheader(\"\ud83d\udccb Result\")\n \n    # Result box\n    if prediction == 1:\n        st.markdown(f\"\"\"\n        <div class=\"result-positive\">\n            <h2>\ud83d\udd34 High Risk \u2014 Alzheimer's Detected</h2>\n            <p style=\"font-size:18px;\">This patient shows <b>{probability*100:.1f}%</b> probability of Alzheimer's disease.</p>",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "<p>\u26a0\ufe0f Please consult a neurologist or specialist immediately for further evaluation.</p>\n        </div>\n        \"\"\", unsafe_allow_html=True)\n    else:\n        st.markdown(f\"\"\"\n        <div class=\"result-negative\">\n            <h2>\ud83d\udfe2 Low Risk \u2014 No Alzheimer's Detected</h2>\n            <p style=\"font-size:18px;\">This patient shows <b>{probability*100:.1f}%</b> probability of Alzheimer's disease.</p>\n            <p>\u2705 No immediate concern. Continue regular health checkups.</p>",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "</div>\n        \"\"\", unsafe_allow_html=True)\n \n    # Gauge chart\n    st.markdown(\"<br>\", unsafe_allow_html=True)\n    fig = go.Figure(go.Indicator(\n        mode  = \"gauge+number+delta\",\n        value = round(probability * 100, 1),\n        title = {'text': \"Alzheimer's Risk Probability (%)\"},\n        delta = {'reference': 50},\n        gauge = {\n            'axis': {'range': [0, 100]},\n            'bar':  {'color': '#7C3AED'},\n            'steps': [",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "'steps': [\n                {'range': [0,  30],  'color': '#D1FAE5'},\n                {'range': [30, 60],  'color': '#FEF3C7'},\n                {'range': [60, 100], 'color': '#FEE2E2'}\n            ],\n            'threshold': {\n                'line':      {'color': 'red', 'width': 4},\n                'thickness': 0.75,\n                'value':     50\n            }\n        }\n    ))\n    fig.update_layout(height=300)\n    st.plotly_chart(fig, use_container_width=True)\n \n    # Key factors",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# Key factors\n    st.subheader(\"\ud83d\udd0d Key Risk Factors Entered\")\n    risk_summary = pd.DataFrame({\n        'Factor':       ['MMSE Score', 'Functional Assessment', 'ADL Score',\n                         'Memory Complaints', 'Family History', 'Depression', 'Age'],\n        'Value':        [mmse, functional_assess, adl,\n                         'Yes' if memory_complaints else 'No',\n                         'Yes' if family_history else 'No',\n                         'Yes' if depression else 'No',",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "age],\n        'Risk Level':   [\n            '\ud83d\udd34 High' if mmse < 20 else ('\ud83d\udfe1 Medium' if mmse < 25 else '\ud83d\udfe2 Low'),\n            '\ud83d\udd34 High' if functional_assess < 4 else ('\ud83d\udfe1 Medium' if functional_assess < 7 else '\ud83d\udfe2 Low'),\n            '\ud83d\udd34 High' if adl < 4 else ('\ud83d\udfe1 Medium' if adl < 7 else '\ud83d\udfe2 Low'),\n            '\ud83d\udd34 High' if memory_complaints else '\ud83d\udfe2 Low',\n            '\ud83d\udd34 High' if family_history else '\ud83d\udfe2 Low',\n            '\ud83d\udfe1 Medium' if depression else '\ud83d\udfe2 Low',",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "'\ud83d\udd34 High' if age >= 80 else ('\ud83d\udfe1 Medium' if age >= 70 else '\ud83d\udfe2 Low')\n        ]\n    })\n    st.dataframe(risk_summary, use_container_width=True, hide_index=True)\n \n    st.warning(\"\u26a0\ufe0f **Disclaimer:** This tool is for educational purposes only and is not a substitute for professional medical diagnosis.\")\n \n# ============================================================\n# FOOTER\n# ============================================================\nst.markdown(\"\"\"\n<div class=\"footer\">",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "st.markdown(\"\"\"\n<div class=\"footer\">\n    \ud83e\udde0 Alzheimer's Early Detection System \u00b7 Final Year Project<br>\n    BSc (Hons) Computing Science \u00b7 PSB Academy / Coventry University<br>\n    Built with Python \u00b7 Scikit-learn \u00b7 XGBoost \u00b7 Streamlit\n</div>\n\"\"\", unsafe_allow_html=True)",
+      "source": "alzheimer_dashboard.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "#!/usr/bin/env python\n# coding: utf-8\n\n# In[3]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[3]:\n\n\nimport numpy as np\nimport pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.preprocessing import LabelEncoder, StandardScaler\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.tree import DecisionTreeClassifier\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import (accuracy_score, confusion_matrix,\n                             classification_report, roc_auc_score)\nfrom xgboost import XGBClassifier\n\n\n# In[4]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[4]:\n\n\n# ============================================================\n# STEP 1 \u2014 Load Dataset\n# ============================================================\nprint(\"=\" * 60)\nprint(\"STEP 1: LOAD DATASET\")\nprint(\"=\" * 60)\n\ndf = pd.read_csv('alzheimers_disease_data.csv')  # change filename if needed\n\nprint(f\"Shape: {df.shape}\")\nprint(f\"\\nFirst 5 rows:\")\nprint(df.head())\nprint(f\"\\nColumn names: {df.columns.tolist()}\")\nprint(f\"\\nData types:\\n{df.dtypes}\")\n\n\n# In[5]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[5]:\n\n\n# ============================================================\n# STEP 2 \u2014 EDA (Exploratory Data Analysis)\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 2: EDA\")\nprint(\"=\" * 60)\n\n# Basic statistics\nprint(\"\\n--- describe() ---\")\nprint(df.describe().round(2))\n\n# Missing values\nprint(\"\\n--- Missing Values ---\")\nprint(df.isnull().sum())",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# Target column distribution\nprint(\"\\n--- Target: Diagnosis (0 = No Alzheimer's, 1 = Alzheimer's) ---\")\nprint(df['Diagnosis'].value_counts())\nprint(f\"\\nClass balance (%):\\n{df['Diagnosis'].value_counts(normalize=True).round(3) * 100}\")\n\n\n# In[6]:\n\n\n# ============================================================\n# STEP 3 \u2014 Preprocessing\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 3: PREPROCESSING\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# Drop PatientID and DoctorInCharge \u2014 these are just identifiers, not features\n# They have no predictive value for Alzheimer's detection\ndrop_cols = [col for col in ['PatientID', 'DoctorInCharge'] if col in df.columns]\ndf.drop(columns=drop_cols, inplace=True)\nprint(f\"Dropped columns: {drop_cols}\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# --- Label Encode any remaining object/categorical columns ---\n# LabelEncoder converts text categories like \"Male\"/\"Female\" \u2192 0/1\nle = LabelEncoder()\ncat_cols = df.select_dtypes(include=['object']).columns.tolist()\n\nif cat_cols:\n    for col in cat_cols:\n        df[col] = le.fit_transform(df[col].astype(str))\n    print(f\"Label encoded columns: {cat_cols}\")\nelse:\n    print(\"No categorical columns found \u2014 all columns are already numeric.\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# --- Fill missing values with column median ---\n# Median is better than mean because it is not affected by outliers\nmissing_cols = df.columns[df.isnull().any()].tolist()\nif missing_cols:\n    for col in missing_cols:\n        df[col].fillna(df[col].median(), inplace=True)\n    print(f\"Filled missing values in: {missing_cols}\")\nelse:\n    print(\"No missing values found.\")\n\nprint(f\"\\nShape after preprocessing: {df.shape}\")\n\n\n\n# In[7]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[7]:\n\n\n# ============================================================\n# STEP 4 \u2014 Split Features and Target\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 4: SPLIT FEATURES (X) AND TARGET (y)\")\nprint(\"=\" * 60)\n\n# X = all columns except Diagnosis\n# y = Diagnosis column (0 or 1)\nX = df.drop(columns=['Diagnosis'])\ny = df['Diagnosis']\n\nprint(f\"X shape: {X.shape}\")\nprint(f\"y shape: {y.shape}\")\nprint(f\"Features used: {X.columns.tolist()}\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[8]:\n\n\n# ============================================================\n# STEP 5 \u2014 Train Test Split\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 5: TRAIN TEST SPLIT (80% train, 20% test)\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# stratify=y ensures both train and test have same % of 0s and 1s\n# Important for medical datasets where class imbalance can exist\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42, stratify=y\n)\n\nprint(f\"X_train: {X_train.shape}  |  X_test: {X_test.shape}\")\nprint(f\"y_train: {y_train.shape}  |  y_test: {y_test.shape}\")\n\n\n# In[9]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[9]:\n\n\n# ============================================================\n# STEP 6 \u2014 Feature Scaling (StandardScaler)\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 6: FEATURE SCALING \u2014 StandardScaler\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# StandardScaler makes every feature have mean=0 and std=1\n# This is REQUIRED for Logistic Regression\n# For tree-based models (Decision Tree, RF, XGBoost) it is not required\n# but we apply it anyway for consistency\nscaler = StandardScaler()\n\n# fit_transform on train \u2014 learns mean & std from training data only\n# transform on test \u2014 applies the same learned mean & std (no leakage)\nX_train_scaled = scaler.fit_transform(X_train)\nX_test_scaled  = scaler.transform(X_test)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "print(\"Scaling done. Mean of each feature in X_train_scaled \u2248 0\")\nprint(f\"Sample means (first 5 features): {X_train_scaled.mean(axis=0)[:5].round(4)}\")\n\n\n\n# In[10]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# ============================================================\n# Helper function to print all metrics\n# ============================================================\ndef evaluate_model(name, y_test, y_pred, y_prob=None):\n    print(f\"\\n--- {name} ---\")\n    print(f\"Accuracy  : {accuracy_score(y_test, y_pred):.4f}\")\n    if y_prob is not None:\n        print(f\"ROC-AUC   : {roc_auc_score(y_test, y_prob):.4f}\")\n    print(f\"\\nConfusion Matrix:\\n{confusion_matrix(y_test, y_pred)}\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "print(f\"\\nClassification Report:\\n{classification_report(y_test, y_pred)}\")",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[11]:\n\n\n# ============================================================\n# STEP 7 \u2014 Model 1: Logistic Regression\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 7: MODEL 1 \u2014 LOGISTIC REGRESSION\")\nprint(\"=\" * 60)\n\n# Logistic Regression is the baseline model\n# max_iter=1000 to ensure the solver converges\nlr = LogisticRegression(max_iter=1000, random_state=42)\nlr.fit(X_train_scaled, y_train)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "lr_pred = lr.predict(X_test_scaled)\nlr_prob = lr.predict_proba(X_test_scaled)[:, 1]  # probability of class 1\n\nevaluate_model(\"Logistic Regression\", y_test, lr_pred, lr_prob)\n\n\n# In[12]:\n\n\n# ============================================================\n# STEP 8 \u2014 Model 2: Decision Tree\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 8: MODEL 2 \u2014 DECISION TREE\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# max_depth=5 prevents overfitting \u2014 tree won't grow too deep\ndt = DecisionTreeClassifier(max_depth=5, random_state=42)\ndt.fit(X_train_scaled, y_train)\n\ndt_pred = dt.predict(X_test_scaled)\ndt_prob = dt.predict_proba(X_test_scaled)[:, 1]\n\nevaluate_model(\"Decision Tree\", y_test, dt_pred, dt_prob)\n\n\n\n# In[13]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[13]:\n\n\n# ============================================================\n# STEP 9 \u2014 Model 3: Random Forest\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 9: MODEL 3 \u2014 RANDOM FOREST\")\nprint(\"=\" * 60)\n\n# n_estimators=100 \u2192 builds 100 decision trees and averages them\n# This reduces overfitting compared to a single Decision Tree\nrf = RandomForestClassifier(n_estimators=100, random_state=42)\nrf.fit(X_train_scaled, y_train)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "rf_pred = rf.predict(X_test_scaled)\nrf_prob = rf.predict_proba(X_test_scaled)[:, 1]\n\nevaluate_model(\"Random Forest\", y_test, rf_pred, rf_prob)\n\n# Feature importance \u2014 which features matter most for prediction\nprint(\"\\nTop 10 Important Features (Random Forest):\")\nfeat_imp = pd.Series(rf.feature_importances_, index=X.columns)\nprint(feat_imp.sort_values(ascending=False).head(10).round(4))\n\n\n# In[14]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[14]:\n\n\n# ============================================================\n# STEP 10 \u2014 Model 4: XGBoost (Primary / Best Model)\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 10: MODEL 4 \u2014 XGBOOST (Primary Model)\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# XGBoost is gradient boosting \u2014 builds trees sequentially\n# Each new tree corrects errors made by the previous ones\n# eval_metric='logloss' is standard for binary classification\nxgb = XGBClassifier(\n    n_estimators=100,\n    learning_rate=0.1,       # step size for each boosting round\n    max_depth=5,             # depth of each tree\n    eval_metric='logloss',\n    random_state=42,\n    use_label_encoder=False\n)\nxgb.fit(X_train_scaled, y_train)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "xgb_pred = xgb.predict(X_test_scaled)\nxgb_prob = xgb.predict_proba(X_test_scaled)[:, 1]\n\nevaluate_model(\"XGBoost\", y_test, xgb_pred, xgb_prob)\n\n# Feature importance for XGBoost\nprint(\"\\nTop 10 Important Features (XGBoost):\")\nxgb_imp = pd.Series(xgb.feature_importances_, index=X.columns)\nprint(xgb_imp.sort_values(ascending=False).head(10).round(4))\n\n\n# In[15]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[15]:\n\n\n# ============================================================\n# STEP 11 \u2014 Model Comparison Summary\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 11: MODEL COMPARISON SUMMARY\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "results = {\n    'Model': ['Logistic Regression', 'Decision Tree', 'Random Forest', 'XGBoost'],\n    'Accuracy': [\n        accuracy_score(y_test, lr_pred),\n        accuracy_score(y_test, dt_pred),\n        accuracy_score(y_test, rf_pred),\n        accuracy_score(y_test, xgb_pred)\n    ],\n    'ROC-AUC': [\n        roc_auc_score(y_test, lr_prob),\n        roc_auc_score(y_test, dt_prob),\n        roc_auc_score(y_test, rf_prob),\n        roc_auc_score(y_test, xgb_prob)\n    ]\n}",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "summary_df = pd.DataFrame(results)\nsummary_df['Accuracy'] = summary_df['Accuracy'].round(4)\nsummary_df['ROC-AUC']  = summary_df['ROC-AUC'].round(4)\nprint(summary_df.to_string(index=False))\n\nbest_model = summary_df.loc[summary_df['ROC-AUC'].idxmax(), 'Model']\nprint(f\"\\nBest model by ROC-AUC: {best_model}\")\n\nprint(\"\\n\" + \"=\" * 60)\nprint(\"PROJECT COMPLETE\")\nprint(\"=\" * 60)\n\n\n# In[16]:",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# In[16]:\n\n\n# ============================================================\n# STEP 12 \u2014 Use Best Model for Final Predictions\n# ============================================================\nprint(\"\\n\" + \"=\" * 60)\nprint(\"STEP 12: BEST MODEL \u2014 FINAL PREDICTIONS\")\nprint(\"=\" * 60)\n\n# Map model name \u2192 actual trained model object\nmodel_map = {\n    'Logistic Regression': lr,\n    'Decision Tree':       dt,\n    'Random Forest':       rf,\n    'XGBoost':             xgb\n}",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "# Pick the actual model object using the best model name\nbest_model = model_map[best_model]\nprint(f\"Selected: {best_model}\")\n\n# Final predictions using the best model\nfinal_pred = best_model.predict(X_test_scaled)\nfinal_prob = best_model.predict_proba(X_test_scaled)[:, 1]\n\nprint(f\"\\nFinal Accuracy : {accuracy_score(y_test, final_pred):.4f}\")\nprint(f\"Final ROC-AUC  : {roc_auc_score(y_test, final_prob):.4f}\")\n\nprint(\"\\nFinal Confusion Matrix:\")\nprint(confusion_matrix(y_test, final_pred))",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    },
+    {
+      "text": "print(\"\\nFinal Classification Report:\")\nprint(classification_report(y_test, final_pred,\n      target_names=[\"No Alzheimer's (0)\", \"Alzheimer's (1)\"]))\n\n# Show sample predictions vs actual\nprint(\"Sample \u2014 Actual vs Predicted (first 10):\")\nsample = pd.DataFrame({\n    'Actual'   : y_test.values[:10],\n    'Predicted': final_pred[:10],\n    \"Probability (Alzheimer's)\": final_prob[:10].round(3)\n})\nprint(sample.to_string(index=False))\n\nprint(\"\\n\" + \"=\" * 60)\nprint(\"PROJECT COMPLETE\")\nprint(\"=\" * 60)",
+      "source": "final_year.py",
+      "strategy": "recursive"
+    }
+  ]
+}
