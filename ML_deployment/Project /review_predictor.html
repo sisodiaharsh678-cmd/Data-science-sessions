@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Sentiment Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 60px auto;
+            text-align: center;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            font-size: 16px;
+            padding: 10px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 25px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Product Review Sentiment Predictor</h2>
+    <textarea id="reviewInput" placeholder="Type your product review here..."></textarea>
+    <br>
+    <button onclick="predictSentiment()">Predict</button>
+
+    <div id="result"></div>
+
+    <script>
+        async function predictSentiment() {
+            const review = document.getElementById("reviewInput").value;
+            const resultDiv = document.getElementById("result");
+
+            if (!review.trim()) {
+                resultDiv.innerText = "Please enter a review first.";
+                return;
+            }
+
+            resultDiv.innerText = "Predicting...";
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ review: review })
+                });
+
+                const data = await response.json();
+                resultDiv.innerText = "Prediction: " + data.prediction;
+                resultDiv.style.color = data.prediction === "Positive" ? "green" : "red";
+            } catch (error) {
+                resultDiv.innerText = "Error connecting to the API.";
+            }
+        }
+    </script>
+
+</body>
+</html>
