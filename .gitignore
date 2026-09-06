@@ -10,3 +10,5 @@ Transformer/results/
 checkpoint-*/
 Transformer/saved_summary_model/
 *.safetensors
+.env
+**/.env
