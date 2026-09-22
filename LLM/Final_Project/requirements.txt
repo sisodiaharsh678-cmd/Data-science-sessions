@@ -1,0 +1,5 @@
+streamlit
+pypdf
+requests
+
+# pip install -r requirements.txt
